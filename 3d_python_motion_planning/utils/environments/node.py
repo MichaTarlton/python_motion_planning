@@ -1,4 +1,4 @@
-https://github.com/JuliaWinHau/pathfinding_simulation_in5060.git"""
+"""
 @file: node.py
 @breif: 2-dimension node data stucture
 @author: Yang Haodong, Wu Maojia

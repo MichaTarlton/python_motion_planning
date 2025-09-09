@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from scipy.spatial import cKDTree
 import numpy as np
 
-from .node3d import Node
+from .node import Node
 
 class Env(ABC):
     """
