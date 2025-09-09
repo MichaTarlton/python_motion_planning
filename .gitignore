@@ -26,6 +26,7 @@ examples/models/*
 # Editor directories and files
 .idea
 .vscode
+.history
 .pypirc
 *.suo
 *.ntvs*
