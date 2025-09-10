@@ -72,16 +72,17 @@ class GraphSearcher(Planner):
         if node1.current in self.obstacles or node2.current in self.obstacles:
             return True
 
-        x1, y1 = node1.x, node1.y
-        x2, y2 = node2.x, node2.y
+        x1, y1, z1 = node1.x, node1.y, node1.z
+        x2, y2, z2 = node2.x, node2.y, node2.z
+        
 
         if x1 != x2 and y1 != y2:
             if x2 - x1 == y1 - y2:
-                s1 = (min(x1, x2), min(y1, y2))
-                s2 = (max(x1, x2), max(y1, y2))
+                s1 = (min(x1, x2, z1), min(y1, y2, z1))
+                s2 = (max(x1, x2, z2), max(y1, y2, z2))
             else:
-                s1 = (min(x1, x2), max(y1, y2))
-                s2 = (max(x1, x2), min(y1, y2))
+                s1 = (min(x1, x2, z1), max(y1, y2, z1))
+                s2 = (max(x1, x2, z2), min(y1, y2, z2))
             if s1 in self.obstacles or s2 in self.obstacles:
                 return True
         return False
