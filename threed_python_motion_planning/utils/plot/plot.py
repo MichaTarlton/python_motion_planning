@@ -4,11 +4,17 @@ Plot tools 2D
 """
 import numpy as np
 import matplotlib
+# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from matplotlib.ticker import MaxNLocator
 
+# import ipyvolume as ipv
+
+
+# from src.Pathfinding3D.environment3D.env import Env, Grid, Map
+# from src.Pathfinding3D.environment3D.node import Node
 from ..environment.env import Env, Grid, Map, Node
-
 
 class Plot:
     def __init__(self, start, goal, env: Env):
@@ -16,7 +22,9 @@ class Plot:
         self.goal = Node(goal, goal, 0, 0)
         self.env = env
         self.fig = plt.figure("planning")
-        self.ax = self.fig.add_subplot()
+        #self.ax = self.fig.add_subplot()
+        # creation of the 3D figure
+        self.ax = self.fig.add_subplot(111, projection='3d')
 
     def animation(self, path: list, name: str, cost: float = None, expand: list = None, history_pose: list = None,
                   predict_path: list = None, lookahead_pts: list = None, cost_curve: list = None,
@@ -37,6 +45,11 @@ class Plot:
         if ellipse is not None:
             self.plotEllipse(ellipse)
 
+        # plt.show(block=False)
+        # plt.pause(1) 
+        # # plt.savefig("here.png")
+        # ipv.quickvolshow(plt)
+        # plt.savefig("maze_plot.png")
         plt.show()
 
     def plotEnv(self, name: str) -> None:
@@ -47,46 +60,88 @@ class Plot:
         ----------
         name: Algorithm name or some other information
         '''
-        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
-        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+        # plt.plot(self.start.x, self.start.y, self.start.z, marker="s", color="#ff0000")
+        # plt.plot(self.goal.x, self.goal.y, self.goal.z, marker="s", color="#1155cc")
+        self.ax.scatter(self.start.x, self.start.y, self.start.z, marker="s", color="#1155cc", label="start")
+        self.ax.scatter(self.goal.x, self.goal.y, self.goal.z, marker="s", color="#ff0000", label="goal")
 
+        # creating voxel obstacles
         if isinstance(self.env, Grid):
-            obs_x = [x[0] for x in self.env.obstacles]
-            obs_y = [x[1] for x in self.env.obstacles]
-            plt.plot(obs_x, obs_y, "sk")
+            # number of cells nx, ny, nz in the grid along x, y, z axes.
+            nx, ny, nz = self.env.x_range, self.env.y_range, self.env.z_range
+
+            # occupancy
+            occ = np.zeros((nx, ny, nz), dtype=bool)
+            for x, y, z in self.env.obstacles:
+                if 0 <= x < nx and 0 <= y < ny and 0 <= z < nz:
+                    occ[x, y, z] = True
+
+            # edge-aligned coords (broadcastable)
+            x_edges = (np.arange(nx + 1) - 0.5)[:, None, None]  # (nx+1,1,1)
+            y_edges = (np.arange(ny + 1) - 0.5)[None, :, None]  # (1,ny+1,1)
+            z_edges = (np.arange(nz + 1) - 0.5)[None, None, :]  # (1,1,nz+1)
+
+            self.ax.voxels(x_edges, y_edges, z_edges, occ,
+                           facecolors=(0.3, 0.3, 0.3, 0.35),
+                           edgecolor='k', linewidth=0.1)
+
+            # these two set_xlims and set_xticks is to remove the gap between the boundary voxels wall and the grid
+            # match axes limits to the voxel edges
+            self.ax.set_xlim(-0.5, nx - 0.5)
+            self.ax.set_ylim(-0.5, ny - 0.5)
+            self.ax.set_zlim(-0.5, nz - 0.5)
+
+            # tidy ticks to land on voxel edges
+            self.ax.set_xticks(np.arange(1, nx + 1, 1))
+            self.ax.set_yticks(np.arange(1, ny + 1, 1))
+            self.ax.set_zticks(np.arange(1, nz + 1, 1))
+
+            # fewer integer-aligned ticks
+            self.ax.xaxis.set_major_locator(MaxNLocator(nbins=8, integer=True, prune='both'))
+            self.ax.yaxis.set_major_locator(MaxNLocator(nbins=8, integer=True, prune='both'))
+            self.ax.zaxis.set_major_locator(MaxNLocator(nbins=8, integer=True, prune='both'))
+
+            # smaller labels with a bit of spacing
+            self.ax.tick_params(labelsize=10, pad=3)
+
+            # true equal aspect in 3D (instead of plt.axis("equal"))
+            self.ax.set_box_aspect((nx, ny, nz))
 
         if isinstance(self.env, Map):
             ax = self.fig.add_subplot()
             # boundary
-            for (ox, oy, w, h) in self.env.boundary:
+            for (ox, oy, oz, w, d, h) in self.env.boundary:
                 ax.add_patch(patches.Rectangle(
-                        (ox, oy), w, h,
+                        (ox, oy, oz), w, d, h,
                         edgecolor='black',
                         facecolor='black',
                         fill=True
                     )
                 )
             # rectangle obstacles
-            for (ox, oy, w, h) in self.env.obs_rect:
+            for (ox, oy,oz, w, h, d) in self.env.obs_rect:
                 ax.add_patch(patches.Rectangle(
-                        (ox, oy), w, h,
+                        (ox, oy), w, d, h,
                         edgecolor='black',
                         facecolor='gray',
                         fill=True
                     )
                 )
             # circle obstacles
-            for (ox, oy, r) in self.env.obs_circ:
+            for (ox, oy, oz, r) in self.env.obs_circ:
                 ax.add_patch(patches.Circle(
-                        (ox, oy), r,
+                        (ox, oy, oz), r,
                         edgecolor='black',
                         facecolor='gray',
                         fill=True
                     )
                 )
-
+        self.ax.set_xlabel('X')
+        self.ax.set_ylabel('Y')
+        self.ax.set_zlabel('Z')
+        self.ax.legend(loc="best")
         plt.title(name)
-        plt.axis("equal")
+
 
     def plotExpand(self, expand: list) -> None:
         '''
@@ -105,20 +160,23 @@ class Plot:
         if isinstance(self.env, Grid):
             for x in expand:
                 count += 1
-                plt.plot(x.x, x.y, color="#dddddd", marker='s')
+                #plt.plot(x.x, x.y, x.z, color="#dddddd", marker='s')
+                self.ax.plot(x.x, x.y, x.z, color="#dddddd", marker='s')
                 plt.gcf().canvas.mpl_connect('key_release_event',
                                             lambda event: [exit(0) if event.key == 'escape' else None])
                 if count < len(expand) / 3:         length = 20
                 elif count < len(expand) * 2 / 3:   length = 30
                 else:                               length = 40
                 if count % length == 0:             plt.pause(0.001)
-        
+
         if isinstance(self.env, Map):
             for x in expand:
                 count += 1
                 if x.parent:
-                    plt.plot([x.parent[0], x.x], [x.parent[1], x.y], 
-                        color="#dddddd", linestyle="-")
+                    plt.plot([x.parent[0], x.x], [x.parent[1], x.y], [x.parent[2], x.z],
+                       color="#dddddd", linestyle="-")
+                    # self.ax.plot([x.parent[0], x.x], [x.parent[1], x.y], [x.parent[2], x.z],
+                                 # color="#dddddd", linestyle="-")
                     plt.gcf().canvas.mpl_connect('key_release_event',
                                                  lambda event:
                                                  [exit(0) if event.key == 'escape' else None])
@@ -127,7 +185,7 @@ class Plot:
 
         plt.pause(0.01)
 
-    def plotPath(self, path: list, path_color: str='#13ae00', path_style: str="-") -> None:
+    def plotPath(self, path: list, path_color: str='#008000', path_style: str="-") -> None:
         '''
         Plot path in global planning.
 
@@ -137,9 +195,13 @@ class Plot:
         '''
         path_x = [path[i][0] for i in range(len(path))]
         path_y = [path[i][1] for i in range(len(path))]
-        plt.plot(path_x, path_y, path_style, linewidth='2', color=path_color)
-        plt.plot(self.start.x, self.start.y, marker="s", color="#ff0000")
-        plt.plot(self.goal.x, self.goal.y, marker="s", color="#1155cc")
+        path_z = [path[i][2] for i in range(len(path))]
+        #plt.plot(path_x, path_y, path_z, path_style, linewidth='2', color=path_color)
+        #plt.plot(self.start.x, self.start.y, self.start.z, marker="s", color="#ff0000")
+        #plt.plot(self.goal.x, self.goal.y, self.goal.z, marker="s", color="#1155cc")
+        self.ax.plot(path_x, path_y, path_z, path_style, linewidth=5, color=path_color)
+        self.ax.plot(self.start.x, self.start.y, self.start.z, marker="s", color="#ff0000")
+        self.ax.plot(self.goal.x, self.goal.y, self.goal.z, marker="s", color="#1155cc")
 
     def plotAgent(self, pose: tuple, radius: float=1) -> None:
         '''
@@ -150,7 +212,11 @@ class Plot:
         pose: Pose of agent
         radius: Radius of agent
         '''
-        x, y, theta = pose
+        if len(pose) == 3:
+            x, y, theta = pose
+            z = 0
+        else:
+            x, y, z, theta = pose
         ref_vec = np.array([[radius / 2], [0]])
         rot_mat = np.array([[np.cos(theta), -np.sin(theta)],
                             [np.sin(theta),  np.cos(theta)]])
@@ -164,19 +230,18 @@ class Plot:
         except:
             pass
 
-        self.ax.arrow(x, y, float(end_pt[0]) - x, float(end_pt[1]) - y,
-                width=0.1, head_width=0.40, color="r")
-        circle = plt.Circle((x, y), radius, color="r", fill=False)
-        self.ax.add_artist(circle)
+        self.ax.plot([x, float(end_pt[0])], [y, float(end_pt[1])], [z, z],
+                     color="r", linewidth=3)
+        self.ax.scatter(x, y, z, s=radius*100, color="r", alpha=0.6)
 
     def plotHistoryPose(self, history_pose, predict_path=None, lookahead_pts=None) -> None:
         lookahead_handler = None
         for i, pose in enumerate(history_pose):
             if i < len(history_pose) - 1:
-                plt.plot([history_pose[i][0], history_pose[i + 1][0]],
-                    [history_pose[i][1], history_pose[i + 1][1]], c="#13ae00")
+                self.ax.plot([history_pose[i][0], history_pose[i + 1][0]], [history_pose[i][1], history_pose[i + 1][1]],
+                             [history_pose[i][2], history_pose[i + 1][2]], c="#13ae00")
                 if predict_path is not None:
-                    plt.plot(predict_path[i][:, 0], predict_path[i][:, 1], c="#ddd")
+                    self.ax.plot(predict_path[i][:, 0], predict_path[i][:, 1], predict_path[i][:, 2], c="#ddd")
             i += 1
 
             # agent
@@ -187,9 +252,9 @@ class Plot:
                 lookahead_handler.remove()
             if lookahead_pts is not None:
                 try:
-                    lookahead_handler = self.ax.scatter(lookahead_pts[i][0], lookahead_pts[i][1], c="b")
+                    lookahead_handler = self.ax.scatter(lookahead_pts[i][0], lookahead_pts[i][1], lookahead_pts[i][2], c="b")
                 except:
-                    lookahead_handler = self.ax.scatter(lookahead_pts[-1][0], lookahead_pts[-1][1], c="b")
+                    lookahead_handler = self.ax.scatter(lookahead_pts[-1][0], lookahead_pts[-1][1], lookahead_pts[-1][2], c="b")
 
             plt.gcf().canvas.mpl_connect('key_release_event',
                                         lambda event: [exit(0) if event.key == 'escape' else None])
