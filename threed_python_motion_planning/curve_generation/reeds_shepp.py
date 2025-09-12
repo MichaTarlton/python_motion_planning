@@ -7,7 +7,7 @@
 import math
 import numpy as np
 
-from python_motion_planning.utils import Plot
+from utils import Plot
 from .curve import Curve
 
 class ReedsShepp(Curve):
@@ -19,7 +19,7 @@ class ReedsShepp(Curve):
 		max_curv (float): The maximum curvature of the curve
 
 	Examples:
-		>>> from python_motion_planning.curve_generation import ReedsShepp
+		>>> from curve_generation import ReedsShepp
 		>>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
 		>>> generator = ReedsShepp(step, max_curv)
 		>>> generator.run(points)

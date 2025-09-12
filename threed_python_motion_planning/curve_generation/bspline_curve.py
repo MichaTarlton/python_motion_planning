@@ -18,7 +18,7 @@ class BSpline(Curve):
         k (int): Degree of curve
 
     Examples:
-        >>> from python_motion_planning.curve_generation import BSpline
+        >>> from curve_generation import BSpline
         >>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
         >>> generator = BSpline(step, k)
         >>> generator.run(points)

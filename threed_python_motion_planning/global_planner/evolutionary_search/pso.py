@@ -8,8 +8,8 @@ import random, math
 from copy import deepcopy
 
 from .evolutionary_search import EvolutionarySearcher
-from python_motion_planning.utils import Env, MathHelper, Grid
-from python_motion_planning.curve_generation import BSpline
+from utils import Env, MathHelper, Grid
+from curve_generation import BSpline
 
 GEN_MODE_CIRCLE = 0
 GEN_MODE_RANDOM = 1

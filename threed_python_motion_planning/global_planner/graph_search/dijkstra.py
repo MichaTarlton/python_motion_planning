@@ -7,7 +7,7 @@
 import heapq
 
 from .a_star import AStar
-from python_motion_planning.utils import Env, Grid
+from utils import Env, Grid
 
 
 class Dijkstra(AStar):

@@ -6,7 +6,7 @@
 """
 import math
 
-from python_motion_planning.utils import Env, Node, Planner, Grid
+from utils import Env, Node, Planner, Grid
 
 class EvolutionarySearcher(Planner):
     """

@@ -7,7 +7,7 @@
 import math
 
 from .rrt import RRT
-from python_motion_planning.utils import Env, Node, Map
+from utils import Env, Node, Map
 
 
 class RRTConnect(RRT):

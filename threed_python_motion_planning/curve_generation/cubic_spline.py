@@ -18,7 +18,7 @@ class CubicSpline(Curve):
 		step (float): Simulation or interpolation size
 
 	Examples:
-		>>> from python_motion_planning.curve_generation import CubicSpline
+		>>> from curve_generation import CubicSpline
 		>>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
 		>>> generator = CubicSpline(step)
 		>>> generator.run(points)

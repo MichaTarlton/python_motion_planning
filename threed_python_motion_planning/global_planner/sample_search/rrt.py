@@ -8,7 +8,7 @@ import math
 import numpy as np
 
 from .sample_search import SampleSearcher
-from python_motion_planning.utils import Env, Node, Map
+from utils import Env, Node, Map
 
 
 class RRT(SampleSearcher):

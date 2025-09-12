@@ -7,7 +7,7 @@
 import heapq
 
 from .graph_search import GraphSearcher
-from python_motion_planning.utils import Env, Grid, Node
+from utils import Env, Grid, Node
 
 
 class AStar(GraphSearcher):
@@ -92,6 +92,7 @@ class AStar(GraphSearcher):
         Returns:
             neighbors (list): neighbors of current node
         """
+        neighbors = []
         return [node + motion for motion in self.motions
                 if not self.isCollision(node, node + motion)]
 

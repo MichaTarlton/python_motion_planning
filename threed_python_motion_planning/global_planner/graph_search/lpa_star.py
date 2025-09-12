@@ -7,7 +7,7 @@
 import heapq
 
 from .graph_search import GraphSearcher
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 class LNode(Node):
     """

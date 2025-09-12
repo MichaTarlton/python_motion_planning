@@ -7,7 +7,7 @@
 import numpy as np
 
 from scipy.special import comb
-from python_motion_planning.utils import Plot
+from utils import Plot
 from .curve import Curve
 
 class Bezier(Curve):
@@ -19,7 +19,7 @@ class Bezier(Curve):
 		offset (float): The offset of control points
 
 	Examples:
-		>>> from python_motion_planning.curve_generation import Bezier
+		>>> from curve_generation import Bezier
 		>>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
 		>>> generator = Bezier(step, offset)
 		>>> generator.run(points)

@@ -8,7 +8,7 @@ import random
 from bisect import bisect_left
 
 from .evolutionary_search import EvolutionarySearcher
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 
 class ACO(EvolutionarySearcher):

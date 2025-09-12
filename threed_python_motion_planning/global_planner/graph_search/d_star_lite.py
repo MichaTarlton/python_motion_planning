@@ -8,7 +8,7 @@ import heapq
 
 from .graph_search import GraphSearcher
 from .lpa_star import LPAStar, LNode
-from python_motion_planning.utils import Env, Grid
+from utils import Env, Grid
 
 
 class DStarLite(LPAStar):

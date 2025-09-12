@@ -8,7 +8,7 @@ import math
 import numpy as np
 
 from scipy.spatial.transform import Rotation as Rot
-from python_motion_planning.utils import Plot
+from utils import Plot
 from .curve import Curve
 
 class Dubins(Curve):
@@ -20,7 +20,7 @@ class Dubins(Curve):
 		max_curv (float): The maximum curvature of the curve
 
 	Examples:
-		>>> from python_motion_planning.curve_generation import Dubins
+		>>> from curve_generation import Dubins
 		>>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
 		>>> generator = Dubins(step, max_curv)
 		>>> generator.run(points)

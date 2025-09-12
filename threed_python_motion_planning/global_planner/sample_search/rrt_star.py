@@ -5,7 +5,7 @@
 @update: 2024.6.23
 """
 from .rrt import RRT
-from python_motion_planning.utils import Env, Node, Map
+from utils import Env, Node, Map
 
 
 class RRTStar(RRT):

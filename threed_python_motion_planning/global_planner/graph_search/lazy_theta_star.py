@@ -7,7 +7,7 @@
 import heapq
 
 from .theta_star import ThetaStar
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 class LazyThetaStar(ThetaStar):
     """

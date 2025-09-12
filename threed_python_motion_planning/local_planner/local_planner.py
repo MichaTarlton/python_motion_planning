@@ -6,7 +6,7 @@
 """
 import math
 
-from python_motion_planning.utils import Env, Planner, SearchFactory, Plot, Robot, MathHelper
+from utils import Env, Planner, SearchFactory, Plot, Robot, MathHelper
 
 
 class LocalPlanner(Planner):

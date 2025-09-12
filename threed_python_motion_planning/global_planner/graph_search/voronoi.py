@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial import cKDTree, Voronoi
 
 from .graph_search import GraphSearcher
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 class VoronoiPlanner(GraphSearcher):
     """

@@ -17,7 +17,7 @@ class FemPosSmoother(Curve):
 	Parameters:
 
 	Examples:
-		>>> from python_motion_planning.curve_generation import FemPosSmoother
+		>>> from curve_generation import FemPosSmoother
 		>>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
 		>>> generator = FemPosSmoother(w_smooth, w_length, w_ref, dx_l, dx_u, dy_l, dy_u)
 		>>> generator.run(points)

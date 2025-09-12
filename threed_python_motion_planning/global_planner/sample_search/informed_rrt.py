@@ -9,7 +9,7 @@ from functools import partial
 import matplotlib.pyplot as plt
 
 from .rrt_star import RRTStar
-from python_motion_planning.utils import Env, Node, Map
+from utils import Env, Node, Map
 
 
 class Ellipse:

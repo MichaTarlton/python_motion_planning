@@ -5,7 +5,7 @@
 @update: 2024.6.23
 """
 from .graph_search import GraphSearcher
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 
 class DNode(Node):

@@ -5,7 +5,7 @@
 @update: 2023.1.13
 """
 import math
-from python_motion_planning.utils import Env, Node, Planner, Grid
+from utils import Env, Node, Planner, Grid
 
 
 class GraphSearcher(Planner):

@@ -8,7 +8,7 @@ import numpy as np
 from itertools import combinations
 import math
 
-from python_motion_planning.utils import Env, Node, Planner, Map
+from utils import Env, Node, Planner, Map
 
 class SampleSearcher(Planner):
     """

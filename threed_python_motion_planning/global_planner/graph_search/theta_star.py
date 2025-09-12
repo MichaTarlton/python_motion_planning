@@ -7,7 +7,7 @@
 import heapq
 
 from .a_star import AStar
-from python_motion_planning.utils import Env, Node, Grid
+from utils import Env, Node, Grid
 
 
 class ThetaStar(AStar):

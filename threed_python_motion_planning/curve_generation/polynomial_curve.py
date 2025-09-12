@@ -7,7 +7,7 @@
 import math
 import numpy as np
 
-from python_motion_planning.utils import Plot
+from utils import Plot
 from .curve import Curve
 
 class Polynomial(Curve):
@@ -20,7 +20,7 @@ class Polynomial(Curve):
         max_jerk (float): Maximum jerk
 
     Examples:
-        >>> from python_motion_planning.curve_generation import Polynomial
+        >>> from curve_generation import Polynomial
         >>>	points = [(0, 0, 0), (10, 10, -90), (20, 5, 60)]
         >>> generator = Polynomial(step, max_acc, max_jerk)
         >>> generator.run(points)

@@ -7,7 +7,7 @@
 import numpy as np
 
 from .local_planner import LocalPlanner
-from python_motion_planning.utils import Env
+from utils import Env
 
 class LQR(LocalPlanner):
     """
@@ -21,8 +21,8 @@ class LQR(LocalPlanner):
         **params: other parameters can be found in the parent class LocalPlanner
 
     Examples:
-        >>> from python_motion_planning.utils import Grid
-        >>> from python_motion_planning.local_planner import LQR
+        >>> from utils import Grid
+        >>> from local_planner import LQR
         >>> start = (5, 5, 0)
         >>> goal = (45, 25, 0)
         >>> env = Grid(51, 31)

@@ -8,7 +8,7 @@ import numpy as np
 import math
 
 from .local_planner import LocalPlanner
-from python_motion_planning.utils import Env, MathHelper
+from utils import Env, MathHelper
 
 
 class PID(LocalPlanner):
@@ -23,8 +23,8 @@ class PID(LocalPlanner):
         **params: other parameters can be found in the parent class LocalPlanner
 
     Examples:
-        >>> from python_motion_planning.utils import Grid
-        >>> from python_motion_planning.local_planner import PID
+        >>> from utils import Grid
+        >>> from local_planner import PID
         >>> start = (5, 5, 0)
         >>> goal = (45, 25, 0)
         >>> env = Grid(51, 31)
