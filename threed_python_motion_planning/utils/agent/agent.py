@@ -17,9 +17,10 @@ class Agent(ABC):
         py (float): initial y-position
         theta (float): initial pose angle
     """
-    def __init__(self, px, py, theta) -> None:
+    def __init__(self, px, py, pz, theta) -> None:
         self.px = px
         self.py = py
+        self.pz = pz
         self.theta = theta
         self.parameters = None
 
@@ -31,7 +32,7 @@ class Agent(ABC):
 
     @property
     def position(self):
-        return (self.px, self.py)
+        return (self.px, self.py, self.pz)
 
     @abstractmethod
     def kinematic(self, u, dt):
@@ -54,11 +55,12 @@ class Robot(Agent):
         v (float): linear velocity
         w (float): angular velocity
     """
-    def __init__(self, px, py, theta, v, w) -> None:
-        super().__init__(px, py, theta)
+    def __init__(self, px, py, pz, theta, v, w, h) -> None:
+        super().__init__(px, py, pz, theta)
         # velocity
         self.v = v
         self.w = w
+        self.h = h # z velocity
         # history
         self.history_pose = []
     
@@ -79,13 +81,13 @@ class Robot(Agent):
         """
         new_state = self.lookforward(self.state, u, dt).squeeze().tolist()
         if replace:
-            self.history_pose.append((self.px, self.py, self.theta))
-            self.px, self.py, self.theta = new_state[0], new_state[1], new_state[2]
-            self.v, self.w = new_state[3], new_state[4]
+            self.history_pose.append((self.px, self.py, self.pz, self.theta))
+            self.px, self.py, self.pz, self.theta = new_state[0], new_state[1], new_state[2], new_state[3]
+            self.v, self.w, self.h = new_state[4], new_state[5], new_state[6]
         else:
             new_robot = Robot(new_state[0], new_state[1], new_state[2], 
-                new_state[3], new_state[4])
-            new_robot.setParameters(self.parameters)
+                new_state[3], new_state[4], new_state[5], new_state[6])
+            new_robot.setParameters(**self.parameters)
             return new_robot
     
     def lookforward(self, state: np.ndarray, u: np.ndarray, dt: float) -> np.ndarray:
@@ -99,18 +101,22 @@ class Robot(Agent):
             obstacles (set): set of obstacles with (x, y)
 
         Returns:
-            new_state (np.ndarray (5x1)): new robot state with [x, y, theta, v, w]
+            new_state (np.ndarray (7x1)): new robot state with [x, y, z, theta, v, w, h]
         """
-        F = np.array([[1, 0, 0, 0, 0],
-                      [0, 1, 0, 0, 0],
-                      [0, 0, 1, 0, 0],
-                      [0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0]])
-        B = np.array([[dt * math.cos(state[2]),  0],
-                      [dt * math.sin(state[2]),  0],
-                      [                      0, dt],
-                      [                      1,  0],
-                      [                      0,  1]])
+        F = np.array([[1, 0, 0, 0, 0, 0, 0], # x
+                      [0, 1, 0, 0, 0, 0, 0], # y
+                      [0, 0, 1, 0, 0, 0, 0], # z
+                      [0, 0, 0, 1, 0, 0, 0], # theta
+                      [0, 0, 0, 0, 0, 0, 0], # v
+                      [0, 0, 0, 0, 0, 0, 0], # w
+                      [0, 0, 0, 0, 0, 0, 0],]) # h
+        B = np.array([[dt * math.cos(state[3]), 0, 0],  # x movement
+                      [dt * math.sin(state[3]), 0, 0],  # y movement
+                      [0, 0, dt],  # z movement
+                      [0, dt, 0],  # theta change
+                      [1, 0, 0],  # v update
+                      [0, 1, 0],  # w update
+                      [0, 0, 1]])  # h update
         new_state = F @ state + B @ u
 
         return new_state
@@ -121,6 +127,7 @@ class Robot(Agent):
         """
         self.v = 0
         self.w = 0
+        self.h = 0
         self.history_pose = []
 
     @property
@@ -131,5 +138,5 @@ class Robot(Agent):
         Returns:
             state (np.ndarray (5x1)): robot state with [x, y, theta, v, w]
         """
-        state = np.array([[self.px], [self.py], [self.theta], [self.v], [self.w]]) 
+        state = np.array([[self.px], [self.py], [self.pz], [self.theta], [self.v], [self.w], [self.h]])
         return state

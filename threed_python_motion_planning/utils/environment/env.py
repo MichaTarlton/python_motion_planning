@@ -21,7 +21,7 @@ class Env(ABC):
         eps (float): tolerance for float comparison
 
     Examples:
-        >>> from python_motion_planning.utils import Env
+        >>> from utils import Env
         >>> env = Env(30, 40)
     """
     def __init__(self, x_range: int, y_range: int, z_range: int, eps: float = 1e-6) -> None:
@@ -62,7 +62,7 @@ class Grid(Env):
             #! For those lookng to copy this repo see the notes on what you are setting the path cost as
             # Node((dx, dy, dz), None, sqrt(dx**2 + dy**2 + dz**2), None) #! This one assumes that the cost is a (normalized) sum of movements, as if it can only move from one cube to the next
             
-            Node((dx, dy, dz), None, sqrt(dx**2 + dy**2 + dz**2), None) # this assumes that all directions (including diagonals) cost the same amount. This is more like assuming a spherical field of movement
+            Node((dx, dy, dz), None, sqrt(2), None) # this assumes that all directions (including diagonals) cost the same amount. This is more like assuming a spherical field of movement
             for dx in [-1, 0, 1] for dy in [-1, 0, 1] for dz in [-1, 0, 1]
             if not (dx == 0 and dy == 0 and dz == 0) #! Don't include this if you want to a "do not move step", which you may actually want to give "no cost" or perhaps play around with different levels of costs 
             ]
@@ -90,18 +90,36 @@ class Grid(Env):
         #     obstacles.add((0, 0, i))
         #     obstacles.add((x - 1, i)
 
-        for i in range(z):
-            for j in range(x):
-                obstacles.add((j, 0, i))
-                obstacles.add((j, y-1, i)) # why do we set these as -1 the range we want
-            for j in range(y):
-                obstacles.add((0, j, i))
-                obstacles.add((x-1, j, i))
+        # for i in range(z):
+        #     for j in range(x):
+        #         obstacles.add((j, 0, i))
+        #         obstacles.add((j, y-1, i)) # why do we set these as -1 the range we want
+        #     for j in range(y):
+        #         obstacles.add((0, j, i))
+        #         obstacles.add((x-1, j, i))
 
-        for i in range(z):
-            for j in range(x):
-                    obstacles.add((i,j,0))
-                    obstacles.add((i,j,z-1))
+        # for i in range(z):
+        #     for j in range(x):
+        #             obstacles.add((i,j,0))
+        #             obstacles.add((i,j,z-1))
+#! Alright I tried it my way and it doesn't work
+#! Nope this does not seem to init boundaries either
+        for i in range(x):
+            for j in range(y):
+                obstacles.add((i, j, 0))  # Floor
+                obstacles.add((i, j, z - 1))  # Ceiling
+
+        # XZ faces
+        for i in range(x):
+            for k in range(z):
+                obstacles.add((i, 0, k))  # Front wall
+                obstacles.add((i, y - 1, k))  # Back wall
+
+        # YZ faces
+        for j in range(y):
+            for k in range(z):
+                obstacles.add((0, j, k))  # Left wall
+                obstacles.add((x - 1, j, k))  # Right wall
 
 
         self.update(obstacles)

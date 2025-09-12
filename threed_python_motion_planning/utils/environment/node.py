@@ -72,7 +72,7 @@ class Node(object):
     
     @property
     def z(self) -> float:
-        return self.current[1]
+        return self.current[2]
 
     @property
     def px(self) -> float:
@@ -91,6 +91,6 @@ class Node(object):
     @property
     def pz(self) -> float:
         if self.parent:
-            return self.parent[1]
+            return self.parent[2]
         else:
             return None

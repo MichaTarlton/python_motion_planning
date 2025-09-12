@@ -20,10 +20,10 @@ class Planner(ABC):
         self.plot = Plot(start, goal, env)
 
     def dist(self, node1: Node, node2: Node) -> float:
-        return math.hypot(node2.x - node1.x, node2.y - node1.y)
+        return math.hypot(node2.x - node1.x, node2.y - node1.y, node2.z - node1.z)
     
     def angle(self, node1: Node, node2: Node) -> float:
-        return math.atan2(node2.y - node1.y, node2.x - node1.x)
+        return math.atan2(node2.y - node1.y, node2.x - node1.x) #? will this support 3d coords
 
     @abstractmethod
     def plan(self):

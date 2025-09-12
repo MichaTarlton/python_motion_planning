@@ -1,5 +1,5 @@
 """
-@file: pose2d.py
+@file: pose3d.py
 @breif: 2-dimension pose data stucture
 @author: Wu Maojia
 @update: 2024.3.15
@@ -7,7 +7,7 @@
 import math
 
 
-class Pose2D(object):
+class Pose3D(object):
     """
     Class for searching and manipulating 2-dimensional poses.
 
@@ -41,9 +41,10 @@ class Pose2D(object):
         >>> True
     """
 
-    def __init__(self, x: float, y: float, theta: float = 0, eps: float = 1e-6) -> None:
+    def __init__(self, x: float, y: float, z: float, theta: float = 0, eps: float = 1e-6) -> None:
         self.x = x
         self.y = y
+        self.z = z
         self.theta = theta
         self.eps = eps
 
@@ -53,39 +54,44 @@ class Pose2D(object):
         if abs(self.y - round(self.y)) < self.eps:
             self.y = round(self.y)
 
+        if abs(self.z - round(self.z)) < self.eps:
+            self.z = round(self.z)
+
         if abs(self.theta - round(self.theta)) < self.eps:
             self.theta = round(self.theta)
 
     def __add__(self, pose):
-        assert isinstance(pose, Pose2D)
-        return Pose2D(self.x + pose.x, self.y + pose.y, self.theta + pose.theta)
+        assert isinstance(pose, Pose3D)
+        return Pose3D(self.x + pose.x, self.y + pose.y, self.z + pose.z, self.theta + pose.theta)
 
     def __sub__(self, pose):
-        assert isinstance(pose, Pose2D)
-        return Pose2D(self.x - pose.x, self.y - pose.y, self.theta - pose.theta)
+        assert isinstance(pose, Pose3D)
+        return Pose3D(self.x - pose.x, self.y - pose.y, self.z - pose.z, self.theta - pose.theta)
 
     def __eq__(self, pose) -> bool:
-        if not isinstance(pose, Pose2D):
+        if not isinstance(pose, Pose3D):
             return False
-        return (abs(self.x - pose.x) < self.eps and abs(self.y - pose.y) < self.eps
-                and abs(self.theta - pose.theta) < self.eps)
+        return (abs(self.x - pose.x) < self.eps and
+                abs(self.y - pose.y) < self.eps and
+                abs(self.z - pose.z) < self.eps and
+                abs(self.theta - pose.theta) < self.eps)
 
     def __ne__(self, pose) -> bool:
         return not self.__eq__(pose)
 
     def __hash__(self) -> int:
-        return hash((self.x, self.y, self.theta))
+        return hash((self.x, self.y, self.z, self.theta))
 
     def __str__(self) -> str:
-        return "Pose2D({}, {}, {})".format(self.x, self.y, self.theta)
+        return "Pose3D({}, {}, {}, {})".format(self.x, self.y, self.z, self.theta)
 
     def __repr__(self) -> str:
         return self.__str__()
 
     @staticmethod
     def from_tuple(pose: tuple):
-        return Pose2D(pose[0], pose[1], pose[2])
+        return Pose3D(pose[0], pose[1], pose[2], pose[3])
 
     @property
     def to_tuple(self) -> tuple:
-        return self.x, self.y, self.theta
+        return self.x, self.y, self.z, self.theta

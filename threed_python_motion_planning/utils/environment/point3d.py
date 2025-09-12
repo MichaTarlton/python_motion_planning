@@ -1,5 +1,5 @@
 """
-@file: point2d.py
+@file: point3d.py
 @breif: 2-dimension point data stucture
 @author: Wu Maojia
 @update: 2024.3.15
@@ -7,7 +7,7 @@
 import math
 
 
-class Point2D(object):
+class Point3D(object):
     """
     Class for searching and manipulating 2-dimensional points.
 
@@ -43,9 +43,10 @@ class Point2D(object):
         >>> 0.7853981633974483
     """
 
-    def __init__(self, x: float, y: float, eps: float = 1e-6) -> None:
+    def __init__(self, x: float, y: float, z:float, eps: float = 1e-6) -> None:
         self.x = x
         self.y = y
+        self.z = z
         self.eps = eps
 
         if abs(self.x - round(self.x)) < self.eps:
@@ -54,43 +55,48 @@ class Point2D(object):
         if abs(self.y - round(self.y)) < self.eps:
             self.y = round(self.y)
 
+        if abs(self.z - round(self.z)) < self.eps:
+            self.z = round(self.z)
+
     def __add__(self, point):
-        assert isinstance(point, Point2D)
-        return Point2D(self.x + point.x, self.y + point.y)
+        assert isinstance(point, Point3D)
+        return Point3D(self.x + point.x, self.y + point.y, self.z + point.z)
 
     def __sub__(self, point):
-        assert isinstance(point, Point2D)
-        return Point2D(self.x - point.x, self.y - point.y)
+        assert isinstance(point, Point3D)
+        return Point3D(self.x - point.x, self.y - point.y, self.z - point.z)
 
     def __eq__(self, point) -> bool:
-        if not isinstance(point, Point2D):
+        if not isinstance(point, Point3D):
             return False
-        return abs(self.x - point.x) < self.eps and abs(self.y - point.y) < self.eps
+        return (abs(self.x - point.x) < self.eps and
+                abs(self.y - point.y) < self.eps and
+                abs(self.z - point.z) < self.eps)
 
     def __ne__(self, point) -> bool:
         return not self.__eq__(point)
 
     def __hash__(self) -> int:
-        return hash((self.x, self.y))
+        return hash((self.x, self.y, self.z))
 
     def __str__(self) -> str:
-        return "Point2D({}, {})".format(self.x, self.y)
+        return "Point3D({}, {}, {})".format(self.x, self.y, self.z)
 
     def __repr__(self) -> str:
         return self.__str__()
 
     @staticmethod
     def from_tuple(point: tuple):
-        return Point2D(point[0], point[1])
+        return Point3D(point[0], point[1], point[2])
 
     @property
     def to_tuple(self) -> tuple:
-        return int(self.x), int(self.y)
+        return int(self.x), int(self.y), int(self.z)
 
     def dist(self, point) -> float:
-        assert isinstance(point, Point2D)
-        return math.hypot(self.x - point.x, self.y - point.y)
+        assert isinstance(point, Point3D)
+        return math.hypot(self.x - point.x, self.y - point.y, self.z - point.z)
 
     def angle(self, point) -> float:
-        assert isinstance(point, Point2D)
+        assert isinstance(point, Point3D)
         return math.atan2(point.y - self.y, point.x - self.x)
