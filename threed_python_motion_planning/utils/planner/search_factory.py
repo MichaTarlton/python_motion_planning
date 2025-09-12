@@ -4,7 +4,7 @@
 @author: Winter
 @update: 2023.3.2
 """
-from python_motion_planning.global_planner import *
+from global_planner import *
 
 class SearchFactory(object):
     def __init__(self) -> None:

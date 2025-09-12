@@ -4,7 +4,7 @@
 @author: Winter
 @update: 2023.10.24
 """
-from python_motion_planning.local_planner import *
+from local_planner import *
 
 class ControlFactory(object):
     def __init__(self) -> None:

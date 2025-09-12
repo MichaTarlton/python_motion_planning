@@ -4,7 +4,7 @@
 @author: Winter
 @update: 2023.7.25
 """
-from python_motion_planning.curve_generation import *
+from curve_generation import *
 
 class CurveFactory(object):
     def __init__(self) -> None:
