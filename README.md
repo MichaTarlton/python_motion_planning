@@ -1,6 +1,3 @@
-# If you are part of the JuliaWinHau 5060 repo contact me at michaejt at uio dot no
-# I need to ask about attrbution, reuse, and if I can contribute 
-
 # Introduction
 
 `Motion planning` plans the state sequence of the robot without conflict between the start and goal. 
