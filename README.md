@@ -1,4 +1,4 @@
-# If you are part of the JuliaWinHau 5060 repo conatact me at michaejt at uio dot no
+# If you are part of the JuliaWinHau 5060 repo contact me at michaejt at uio dot no
 # I need to ask about attrbution, reuse, and if I can contribute 
 
 # Introduction
